@@ -1,9 +1,11 @@
 package com.qiyi.framework.surfacetransferservice;
 
 import android.content.Intent;
+import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Surface;
 
 import com.qiyi.framework.surfacetransferservice.ISurfaceTransfer.Stub;
@@ -30,7 +32,38 @@ public class SurfaceTransfer extends Stub {
 		mCallback = callback ;
 		return 0;
 	}
+	@Override
+	public int prepareInterface(IBinder token) {
+		Log.d(TAG, "prepareInterface() called");
+		if (mService == null) return -1;
 
+		VirtualDisplayManager manager;
+		manager = mService.getVirtualDisplayManager();
+		if (manager != null) {
+			manager.prepareInterface(token);
+		} else {
+			Log.e(TAG, "VirtualDisplayManager is null");
+			return -1;
+		}
+
+		return 0;
+	}
+	@Override
+	public int injectEvent(MotionEvent event) {
+		Log.d(TAG, "injectEvent() called");
+		if (mService == null) return -1;
+
+		VirtualDisplayManager manager;
+		manager = mService.getVirtualDisplayManager();
+		if (manager != null) {
+			manager.injectEvent(event);
+		} else {
+			Log.e(TAG, "VirtualDisplayManager is null");
+			return -1;
+		}
+
+		return 0;
+	}
 	@Override
 	public int setSurface(Surface surface, int width, int height, int density){
 		Log.d(TAG, "setSurface() called");

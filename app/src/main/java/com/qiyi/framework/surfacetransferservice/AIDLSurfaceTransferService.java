@@ -10,6 +10,7 @@ import android.util.Log;
 public class AIDLSurfaceTransferService extends Service {
 	private static final String TAG = "SurfaceTransferService.AIDLService";
 	private VirtualDisplayManager mVirtualDisplayManager = null;
+	private IBinder mBinder;
 
 	SurfaceTransfer stub = new SurfaceTransfer(this);
 
@@ -18,18 +19,17 @@ public class AIDLSurfaceTransferService extends Service {
 		super.onCreate();
 		Log.i(TAG, "onCreate() called");
 	}
-	public static int setActivity(Activity activity) {
-		return VirtualDisplayManager.setBaseActivity(activity);
-	}
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.i(TAG, "onStartCommand");
+		Log.i(TAG, "onStartCommand " + intent.getBundleExtra("Bundle").getBinder("binder"));
+		mBinder = intent.getBundleExtra("Bundle").getBinder("binder");
 		initVirtualDisplayManager();
 		return super.onStartCommand(intent, flags, startId);
 	}
 
 	private void initVirtualDisplayManager() {
-		mVirtualDisplayManager = VirtualDisplayManager.getInstance(getBaseContext());
+		mVirtualDisplayManager = VirtualDisplayManager.getInstance(getBaseContext(),mBinder);
 	}
 
 	@Override
