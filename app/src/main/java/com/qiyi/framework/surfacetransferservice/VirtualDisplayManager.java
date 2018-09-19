@@ -37,6 +37,7 @@ public class VirtualDisplayManager implements DisplayManager.DisplayListener {
 	private Method mSetSurface;
 	private Method mSetDrawn;
 	private Method mInjectEvent;
+	private Method mRelease;
 
 	public VirtualDisplayManager() {
 	}
@@ -66,6 +67,7 @@ public class VirtualDisplayManager implements DisplayManager.DisplayListener {
 						mStartActivity = inf.getDeclaredMethod("startActivity", Intent.class);
 						mSetSurface = inf.getDeclaredMethod("setSurface", Surface.class, int.class, int.class, int.class);
 						mInjectEvent = inf.getDeclaredMethod("injectEvent", InputEvent.class);
+						mRelease = inf.getDeclaredMethod("release");
 					}
 				}
 			}
@@ -122,7 +124,16 @@ public class VirtualDisplayManager implements DisplayManager.DisplayListener {
 		updateSurface(null, 0, 0, 0);
 		return 0;
 	}
-	public int injectEvent(MotionEvent event) {
+	public void release() {
+		try {
+			mRelease.invoke(mIActivityContainer);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+	}
+	public int injectEvent(InputEvent event) {
 		try {
 			mInjectEvent.invoke(mIActivityContainer, event);
 		} catch (IllegalAccessException e) {
@@ -178,7 +189,7 @@ public class VirtualDisplayManager implements DisplayManager.DisplayListener {
 	 * @param displayId The id of the logical display that was removed.
 	 */
 	public void onDisplayRemoved(int displayId) {
-		Log.d(TAG, "onDisplayRemoved " + displayId + ", display name " + mDisplayManager.getDisplay(displayId).getName());
+		//Log.d(TAG, "onDisplayRemoved " + displayId + ", display name " + mDisplayManager.getDisplay(displayId).getName());
 	}
 
 	/**

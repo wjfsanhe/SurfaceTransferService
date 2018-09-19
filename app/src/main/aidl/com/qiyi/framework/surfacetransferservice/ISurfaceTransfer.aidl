@@ -5,6 +5,7 @@ import android.content.Intent;
 import com.qiyi.framework.surfacetransferservice.ISurfaceTransferCallback;
 import android.os.IBinder;
 import android.view.MotionEvent;
+import android.view.InputEvent;
 
 // Declare any non-default types here with import statements
 
@@ -13,5 +14,6 @@ interface ISurfaceTransfer {
     int setSurface(in Surface surface, int width, int height, int density);
     int registerListener(in ISurfaceTransferCallback callback);
     int prepareInterface(in IBinder token);
-    int injectEvent(in MotionEvent event);
+    int injectEvent(in InputEvent event);
+    void release();
 }

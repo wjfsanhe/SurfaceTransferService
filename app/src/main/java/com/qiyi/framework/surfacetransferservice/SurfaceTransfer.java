@@ -5,6 +5,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.InputEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
 
@@ -49,7 +50,7 @@ public class SurfaceTransfer extends Stub {
 		return 0;
 	}
 	@Override
-	public int injectEvent(MotionEvent event) {
+	public int injectEvent(InputEvent event) {
 		Log.d(TAG, "injectEvent() called");
 		if (mService == null) return -1;
 
@@ -79,6 +80,20 @@ public class SurfaceTransfer extends Stub {
 		}
 
 		return 0;
+	}
+	@Override
+	public void release() {
+		Log.d(TAG, "startActivity() called");
+		if (mService == null) return ;
+
+		VirtualDisplayManager manager;
+		manager = mService.getVirtualDisplayManager();
+		if (manager != null) {
+			manager.release();
+		} else {
+			Log.e(TAG, "VirtualDisplayManager is null");
+			return ;
+		}
 	}
 	@Override
 	public int startActivity(Intent intent) {
